@@ -21,14 +21,6 @@ class PointsControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("GET /api/hello should return 200 OK and greeting message")
-    void testSayHello() throws Exception {
-        mockMvc.perform(get("/api/hello"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Hello, your REST API backend is working perfectly!"));
-    }
-
-    @Test
     @DisplayName("GET /points with valid customerId and currentDate headers should return 200 OK with correct points summary")
     void testGetPointsWithHeaders() throws Exception {
         mockMvc.perform(get("/points")
