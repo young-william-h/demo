@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import reward.api.demo.pointsApi.model.CustomerPointsSummary;
 import reward.api.demo.pointsApi.model.Transaction;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -104,5 +105,31 @@ class PointsServiceTest {
         assertThat(summary.previousMonthTotal()).isEqualTo(150);          // Dec 2026 (previous year!)
         assertThat(summary.secondPreviousMonthTotal()).isEqualTo(15);     // Nov 2026 (previous year!)
         assertThat(summary.totalPoints()).isEqualTo(255);                 // 90 + 150 + 15
+    }
+
+    @Test
+    @DisplayName("Should accurately calculate points with BigDecimal cents and boundary amounts")
+    void testBigDecimalCalculations() {
+        LocalDate currentDate = LocalDate.of(2026, 10, 25);
+
+        List<Transaction> transactionsWithCents = List.of(
+                // $120.75 -> 2x(20) + 50 = 90 pts
+                new Transaction(20L, LocalDate.of(2026, 10, 1), new BigDecimal("120.75"), 0),
+                // $99.99 -> 1x(49) = 49 pts
+                new Transaction(20L, LocalDate.of(2026, 10, 2), new BigDecimal("99.99"), 0),
+                // $50.00 -> 0 pts
+                new Transaction(20L, LocalDate.of(2026, 10, 3), new BigDecimal("50.00"), 0),
+                // $100.00 -> 1x(50) = 50 pts
+                new Transaction(20L, LocalDate.of(2026, 10, 4), new BigDecimal("100.00"), 0)
+        );
+
+        Optional<CustomerPointsSummary> summaryOpt = pointsService.getCustomerPointsSummary(20L, currentDate, transactionsWithCents);
+
+        assertThat(summaryOpt).isPresent();
+        CustomerPointsSummary summary = summaryOpt.get();
+
+        // 90 + 49 + 0 + 50 = 189
+        assertThat(summary.currentMonthTotal()).isEqualTo(189);
+        assertThat(summary.totalPoints()).isEqualTo(189);
     }
 }

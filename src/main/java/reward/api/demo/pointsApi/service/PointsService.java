@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import reward.api.demo.pointsApi.model.CustomerPointsSummary;
 import reward.api.demo.pointsApi.model.Transaction;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -16,8 +18,10 @@ import static reward.api.demo.pointsApi.data.MockTransactions.getTransactions;
 @Service
 public class PointsService {
 
+    private static final BigDecimal FIFTY = BigDecimal.valueOf(50);
+    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
     public Optional<CustomerPointsSummary> getCustomerPointsSummary(Long customerId, LocalDate currentDate) {
-        // using static data for demo purposes
         return getCustomerPointsSummary(customerId, currentDate, getTransactions());
     }
 
@@ -30,6 +34,7 @@ public class PointsService {
         YearMonth prevMonth = currentMonth.minusMonths(1);
         YearMonth secondPrevMonth = currentMonth.minusMonths(2);
 
+        // Single pass: filter by customer and 3-month window, then group by YearMonth
         Map<YearMonth, List<Transaction>> txByMonth = transactions.stream()
                 .filter(t -> t.customerId() == customerId)
                 .filter(t -> {
@@ -67,12 +72,22 @@ public class PointsService {
     }
 
     private int findPoints(Transaction transaction) {
-        if (transaction.transactionAmount() > 100) {
-            return (int) (Math.floor(transaction.transactionAmount() - 100) * 2 + 50);
+        if (transaction == null || transaction.transactionAmount() == null) {
+            return 0;
         }
 
-        if (transaction.transactionAmount() > 50) {
-            return (int) (Math.floor(transaction.transactionAmount() - 50));
+        BigDecimal amount = transaction.transactionAmount();
+
+        if (amount.compareTo(ONE_HUNDRED) > 0) {
+            return amount.subtract(ONE_HUNDRED)
+                    .setScale(0, RoundingMode.FLOOR)
+                    .intValue() * 2 + 50;
+        }
+
+        if (amount.compareTo(FIFTY) > 0) {
+            return amount.subtract(FIFTY)
+                    .setScale(0, RoundingMode.FLOOR)
+                    .intValue();
         }
 
         return 0;
