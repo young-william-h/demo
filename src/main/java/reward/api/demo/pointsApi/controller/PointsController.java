@@ -19,11 +19,6 @@ public class PointsController {
         this.pointsService = pointsService;
     }
 
-    @GetMapping("/api/hello")
-    public String sayHello() {
-        return "Hello, your REST API backend is working perfectly!";
-    }
-
     @GetMapping("/points")
     public ResponseEntity<CustomerPointsSummmary> getCustomerPointsSummary(
             @RequestHeader("customerId") Long customerId,
