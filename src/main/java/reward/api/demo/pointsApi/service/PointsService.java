@@ -1,40 +1,54 @@
 package reward.api.demo.pointsApi.service;
 
 import org.springframework.stereotype.Service;
-import reward.api.demo.pointsApi.model.CustomerPointsSummmary;
+import reward.api.demo.pointsApi.model.CustomerPointsSummary;
 import reward.api.demo.pointsApi.model.Transaction;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static reward.api.demo.pointsApi.data.MockTransactions.getTransactions;
 
 @Service
 public class PointsService {
 
-    public Optional<CustomerPointsSummmary> getCustomerPointsSummary(Long customerId, LocalDate currentDate) {
+    public Optional<CustomerPointsSummary> getCustomerPointsSummary(Long customerId, LocalDate currentDate) {
+        // using static data for demo purposes
         return getCustomerPointsSummary(customerId, currentDate, getTransactions());
     }
 
-    public Optional<CustomerPointsSummmary> getCustomerPointsSummary(Long customerId, LocalDate currentDate, List<Transaction> transactions) {
-
-        List<Transaction> currentMonthTx = getMonthTransactions(customerId, currentDate, 0, transactions);
-        List<Transaction> prevMonthTx = getMonthTransactions(customerId, currentDate, 1, transactions);
-        List<Transaction> secondPrevMonthTx = getMonthTransactions(customerId, currentDate, 2, transactions);
-
-        // If no transactions are found for this customer in the 3-month window
-        if (currentMonthTx.isEmpty() && prevMonthTx.isEmpty() && secondPrevMonthTx.isEmpty()) {
+    public Optional<CustomerPointsSummary> getCustomerPointsSummary(Long customerId, LocalDate currentDate, List<Transaction> transactions) {
+        if (customerId == null || currentDate == null || transactions == null) {
             return Optional.empty();
         }
 
-        int currentMonthPoints = currentMonthTx.stream().mapToInt(this::findPoints).sum();
-        int previousMonthTotal = prevMonthTx.stream().mapToInt(this::findPoints).sum();
-        int secondPreviousMonthTotal = secondPrevMonthTx.stream().mapToInt(this::findPoints).sum();
+        YearMonth currentMonth = YearMonth.from(currentDate);
+        YearMonth prevMonth = currentMonth.minusMonths(1);
+        YearMonth secondPrevMonth = currentMonth.minusMonths(2);
+
+        Map<YearMonth, List<Transaction>> txByMonth = transactions.stream()
+                .filter(t -> t.customerId() == customerId)
+                .filter(t -> {
+                    YearMonth ym = YearMonth.from(t.transactionDate());
+                    return ym.equals(currentMonth) || ym.equals(prevMonth) || ym.equals(secondPrevMonth);
+                })
+                .collect(Collectors.groupingBy(t -> YearMonth.from(t.transactionDate())));
+
+        // If no transactions found for this customer in the 3-month window
+        if (txByMonth.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int currentMonthPoints = calculatePoints(txByMonth.get(currentMonth));
+        int previousMonthTotal = calculatePoints(txByMonth.get(prevMonth));
+        int secondPreviousMonthTotal = calculatePoints(txByMonth.get(secondPrevMonth));
         int totalPoints = currentMonthPoints + previousMonthTotal + secondPreviousMonthTotal;
 
-        return Optional.of(CustomerPointsSummmary.builder()
+        return Optional.of(CustomerPointsSummary.builder()
                 .customerId(customerId)
                 .totalPoints(totalPoints)
                 .currentMonthTotal(currentMonthPoints)
@@ -43,13 +57,13 @@ public class PointsService {
                 .build());
     }
 
-    private List<Transaction> getMonthTransactions(Long customerId, LocalDate currentDate, Integer monthDifference, List<Transaction> transactions) {
-        YearMonth targetMonth = YearMonth.from(currentDate).minusMonths(monthDifference);
-
-        return transactions.stream().filter(transaction ->
-                transaction.customerId() == customerId &&
-                YearMonth.from(transaction.transactionDate()).equals(targetMonth)
-        ).toList();
+    private int calculatePoints(List<Transaction> monthTransactions) {
+        if (monthTransactions == null || monthTransactions.isEmpty()) {
+            return 0;
+        }
+        return monthTransactions.stream()
+                .mapToInt(this::findPoints)
+                .sum();
     }
 
     private int findPoints(Transaction transaction) {

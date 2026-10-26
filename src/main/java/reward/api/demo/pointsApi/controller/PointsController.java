@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import reward.api.demo.pointsApi.model.CustomerPointsSummmary;
+import reward.api.demo.pointsApi.model.CustomerPointsSummary;
 import reward.api.demo.pointsApi.service.PointsService;
 
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ public class PointsController {
     }
     
     @GetMapping("/points")
-    public ResponseEntity<CustomerPointsSummmary> getCustomerPointsSummary(
+    public ResponseEntity<CustomerPointsSummary> getCustomerPointsSummary(
             @RequestHeader("customerId") Long customerId,
             @RequestHeader("currentDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate currentDate
     ) {

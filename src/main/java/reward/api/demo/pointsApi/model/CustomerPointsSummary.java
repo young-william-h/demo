@@ -3,7 +3,7 @@ package reward.api.demo.pointsApi.model;
 import lombok.Builder;
 
 @Builder
-public record CustomerPointsSummmary(
+public record CustomerPointsSummary(
         long customerId,
         Integer totalPoints,
         Integer currentMonthTotal,

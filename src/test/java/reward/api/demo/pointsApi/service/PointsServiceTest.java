@@ -3,7 +3,7 @@ package reward.api.demo.pointsApi.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import reward.api.demo.pointsApi.model.CustomerPointsSummmary;
+import reward.api.demo.pointsApi.model.CustomerPointsSummary;
 import reward.api.demo.pointsApi.model.Transaction;
 
 import java.time.LocalDate;
@@ -26,10 +26,10 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForCustomer1() {
         LocalDate currentDate = LocalDate.of(2026, 10, 25);
 
-        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummary(1L, currentDate);
+        Optional<CustomerPointsSummary> summaryOpt = pointsService.getCustomerPointsSummary(1L, currentDate);
 
         assertThat(summaryOpt).isPresent();
-        CustomerPointsSummmary summary = summaryOpt.get();
+        CustomerPointsSummary summary = summaryOpt.get();
 
         assertThat(summary.customerId()).isEqualTo(1L);
         assertThat(summary.currentMonthTotal()).isEqualTo(365);
@@ -43,10 +43,10 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForCustomer2() {
         LocalDate currentDate = LocalDate.of(2026, 10, 25);
 
-        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummary(2L, currentDate);
+        Optional<CustomerPointsSummary> summaryOpt = pointsService.getCustomerPointsSummary(2L, currentDate);
 
         assertThat(summaryOpt).isPresent();
-        CustomerPointsSummmary summary = summaryOpt.get();
+        CustomerPointsSummary summary = summaryOpt.get();
 
         assertThat(summary.customerId()).isEqualTo(2L);
         assertThat(summary.currentMonthTotal()).isEqualTo(110);
@@ -60,7 +60,7 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForUnknownCustomer() {
         LocalDate currentDate = LocalDate.of(2026, 10, 25);
 
-        Optional<CustomerPointsSummmary> summary = pointsService.getCustomerPointsSummary(999L, currentDate);
+        Optional<CustomerPointsSummary> summary = pointsService.getCustomerPointsSummary(999L, currentDate);
 
         assertThat(summary).isEmpty();
     }
@@ -70,7 +70,7 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForDateWithNoTransactions() {
         LocalDate currentDate = LocalDate.of(2024, 1, 1);
 
-        Optional<CustomerPointsSummmary> summary = pointsService.getCustomerPointsSummary(1L, currentDate);
+        Optional<CustomerPointsSummary> summary = pointsService.getCustomerPointsSummary(1L, currentDate);
 
         assertThat(summary).isEmpty();
     }
@@ -94,10 +94,10 @@ class PointsServiceTest {
                 new Transaction(10L, LocalDate.of(2026, 10, 31), 100.0, 0)
         );
 
-        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummary(10L, currentDate, customTransactions);
+        Optional<CustomerPointsSummary> summaryOpt = pointsService.getCustomerPointsSummary(10L, currentDate, customTransactions);
 
         assertThat(summaryOpt).isPresent();
-        CustomerPointsSummmary summary = summaryOpt.get();
+        CustomerPointsSummary summary = summaryOpt.get();
 
         assertThat(summary.customerId()).isEqualTo(10L);
         assertThat(summary.currentMonthTotal()).isEqualTo(90);             // Jan 2027

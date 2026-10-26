@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import reward.api.demo.pointsApi.model.CustomerPointsSummmary;
+import reward.api.demo.pointsApi.model.CustomerPointsSummary;
 import reward.api.demo.pointsApi.service.PointsService;
 
 import java.time.LocalDate;
@@ -41,7 +41,7 @@ class PointsControllerTest {
     @Test
     @DisplayName("Should return 200 OK with summary when customer and transactions are found")
     void testGetCustomerPointsSummaryFound() {
-        CustomerPointsSummmary mockSummary = CustomerPointsSummmary.builder()
+        CustomerPointsSummary mockSummary = CustomerPointsSummary.builder()
                 .customerId(1L)
                 .totalPoints(640)
                 .currentMonthTotal(365)
@@ -52,7 +52,7 @@ class PointsControllerTest {
         when(pointsService.getCustomerPointsSummary(eq(1L), any(LocalDate.class)))
                 .thenReturn(Optional.of(mockSummary));
 
-        ResponseEntity<CustomerPointsSummmary> response = pointsController.getCustomerPointsSummary(1L, testDate);
+        ResponseEntity<CustomerPointsSummary> response = pointsController.getCustomerPointsSummary(1L, testDate);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
@@ -67,7 +67,7 @@ class PointsControllerTest {
         when(pointsService.getCustomerPointsSummary(eq(999L), any(LocalDate.class)))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<CustomerPointsSummmary> response = pointsController.getCustomerPointsSummary(999L, testDate);
+        ResponseEntity<CustomerPointsSummary> response = pointsController.getCustomerPointsSummary(999L, testDate);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNull();
