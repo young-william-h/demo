@@ -48,9 +48,9 @@ public class PointsService {
             return Optional.empty();
         }
 
-        int currentMonthPoints = calculatePoints(txByMonth.get(currentMonth));
-        int previousMonthTotal = calculatePoints(txByMonth.get(prevMonth));
-        int secondPreviousMonthTotal = calculatePoints(txByMonth.get(secondPrevMonth));
+        int currentMonthPoints = calculatePointsTotal(txByMonth.get(currentMonth));
+        int previousMonthTotal = calculatePointsTotal(txByMonth.get(prevMonth));
+        int secondPreviousMonthTotal = calculatePointsTotal(txByMonth.get(secondPrevMonth));
         int totalPoints = currentMonthPoints + previousMonthTotal + secondPreviousMonthTotal;
 
         return Optional.of(CustomerPointsSummary.builder()
@@ -62,16 +62,16 @@ public class PointsService {
                 .build());
     }
 
-    private int calculatePoints(List<Transaction> monthTransactions) {
+    private int calculatePointsTotal(List<Transaction> monthTransactions) {
         if (monthTransactions == null || monthTransactions.isEmpty()) {
             return 0;
         }
         return monthTransactions.stream()
-                .mapToInt(this::findPoints)
+                .mapToInt(this::calculatePoints)
                 .sum();
     }
 
-    private int findPoints(Transaction transaction) {
+    private int calculatePoints(Transaction transaction) {
         if (transaction == null || transaction.transactionAmount() == null) {
             return 0;
         }
