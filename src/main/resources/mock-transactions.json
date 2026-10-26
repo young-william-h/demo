@@ -1,0 +1,62 @@
+[
+  {
+    "customerId": 1,
+    "transactionDate": "2026-10-28",
+    "transactionAmount": 200.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-10-22",
+    "transactionAmount": 45.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-10-15",
+    "transactionAmount": 75.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 2,
+    "transactionDate": "2026-10-10",
+    "transactionAmount": 130.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-10-05",
+    "transactionAmount": 120.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-09-20",
+    "transactionAmount": 30.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-09-14",
+    "transactionAmount": 150.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-09-03",
+    "transactionAmount": 90.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-08-19",
+    "transactionAmount": 65.0,
+    "transactionPoints": 0
+  },
+  {
+    "customerId": 1,
+    "transactionDate": "2026-08-08",
+    "transactionAmount": 110.0,
+    "transactionPoints": 0
+  }
+]
