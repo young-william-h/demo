@@ -14,11 +14,11 @@ import static reward.api.demo.pointsApi.data.MockTransactions.getTransactions;
 @Service
 public class PointsService {
 
-    public Optional<CustomerPointsSummmary> getCustomerPointsSummmary(Long customerId, LocalDate currentDate) {
-        return getCustomerPointsSummmary(customerId, currentDate, getTransactions());
+    public Optional<CustomerPointsSummmary> getCustomerPointsSummary(Long customerId, LocalDate currentDate) {
+        return getCustomerPointsSummary(customerId, currentDate, getTransactions());
     }
 
-    public Optional<CustomerPointsSummmary> getCustomerPointsSummmary(Long customerId, LocalDate currentDate, List<Transaction> transactions) {
+    public Optional<CustomerPointsSummmary> getCustomerPointsSummary(Long customerId, LocalDate currentDate, List<Transaction> transactions) {
 
         List<Transaction> currentMonthTx = getMonthTransactions(customerId, currentDate, 0, transactions);
         List<Transaction> prevMonthTx = getMonthTransactions(customerId, currentDate, 1, transactions);

@@ -26,7 +26,7 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForCustomer1() {
         LocalDate currentDate = LocalDate.of(2026, 10, 25);
 
-        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummmary(1L, currentDate);
+        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummary(1L, currentDate);
 
         assertThat(summaryOpt).isPresent();
         CustomerPointsSummmary summary = summaryOpt.get();
@@ -43,7 +43,7 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForCustomer2() {
         LocalDate currentDate = LocalDate.of(2026, 10, 25);
 
-        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummmary(2L, currentDate);
+        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummary(2L, currentDate);
 
         assertThat(summaryOpt).isPresent();
         CustomerPointsSummmary summary = summaryOpt.get();
@@ -60,7 +60,7 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForUnknownCustomer() {
         LocalDate currentDate = LocalDate.of(2026, 10, 25);
 
-        Optional<CustomerPointsSummmary> summary = pointsService.getCustomerPointsSummmary(999L, currentDate);
+        Optional<CustomerPointsSummmary> summary = pointsService.getCustomerPointsSummary(999L, currentDate);
 
         assertThat(summary).isEmpty();
     }
@@ -70,7 +70,7 @@ class PointsServiceTest {
     void testGetCustomerPointsSummaryForDateWithNoTransactions() {
         LocalDate currentDate = LocalDate.of(2024, 1, 1);
 
-        Optional<CustomerPointsSummmary> summary = pointsService.getCustomerPointsSummmary(1L, currentDate);
+        Optional<CustomerPointsSummmary> summary = pointsService.getCustomerPointsSummary(1L, currentDate);
 
         assertThat(summary).isEmpty();
     }
@@ -94,7 +94,7 @@ class PointsServiceTest {
                 new Transaction(10L, LocalDate.of(2026, 10, 31), 100.0, 0)
         );
 
-        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummmary(10L, currentDate, customTransactions);
+        Optional<CustomerPointsSummmary> summaryOpt = pointsService.getCustomerPointsSummary(10L, currentDate, customTransactions);
 
         assertThat(summaryOpt).isPresent();
         CustomerPointsSummmary summary = summaryOpt.get();

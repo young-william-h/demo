@@ -29,7 +29,7 @@ public class PointsController {
             @RequestHeader("customerId") Long customerId,
             @RequestHeader("currentDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate currentDate
     ) {
-        return pointsService.getCustomerPointsSummmary(customerId, currentDate)
+        return pointsService.getCustomerPointsSummary(customerId, currentDate)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

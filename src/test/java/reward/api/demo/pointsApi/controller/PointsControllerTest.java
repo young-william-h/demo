@@ -48,7 +48,7 @@ class PointsControllerTest {
                 .secondPreviousMonthTotal(85)
                 .build();
 
-        when(pointsService.getCustomerPointsSummmary(eq(1L), any(LocalDate.class)))
+        when(pointsService.getCustomerPointsSummary(eq(1L), any(LocalDate.class)))
                 .thenReturn(Optional.of(mockSummary));
 
         ResponseEntity<CustomerPointsSummmary> response = pointsController.getCustomerPointsSummary(1L, testDate);
@@ -57,19 +57,19 @@ class PointsControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().customerId()).isEqualTo(1L);
         assertThat(response.getBody().totalPoints()).isEqualTo(640);
-        verify(pointsService).getCustomerPointsSummmary(1L, testDate);
+        verify(pointsService).getCustomerPointsSummary(1L, testDate);
     }
 
     @Test
     @DisplayName("Should return 404 Not Found when service returns empty Optional")
     void testGetCustomerPointsSummaryNotFound() {
-        when(pointsService.getCustomerPointsSummmary(eq(999L), any(LocalDate.class)))
+        when(pointsService.getCustomerPointsSummary(eq(999L), any(LocalDate.class)))
                 .thenReturn(Optional.empty());
 
         ResponseEntity<CustomerPointsSummmary> response = pointsController.getCustomerPointsSummary(999L, testDate);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNull();
-        verify(pointsService).getCustomerPointsSummmary(999L, testDate);
+        verify(pointsService).getCustomerPointsSummary(999L, testDate);
     }
 }
