@@ -77,27 +77,50 @@ class PointsControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /points without customerId header should return 400 Bad Request")
+    @DisplayName("GET /points without customerId header should return 400 Bad Request with error message")
     void testGetPointsMissingCustomerIdHeader() throws Exception {
         mockMvc.perform(get("/points")
                         .header("currentDate", "2026-10-25"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Missing required header: 'customerId'"));
     }
 
     @Test
-    @DisplayName("GET /points without currentDate header should return 400 Bad Request")
+    @DisplayName("GET /points without currentDate header should return 400 Bad Request with error message")
     void testGetPointsMissingCurrentDateHeader() throws Exception {
         mockMvc.perform(get("/points")
                         .header("customerId", 1L))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Missing required header: 'currentDate'"));
     }
 
     @Test
-    @DisplayName("GET /points with invalid date format should return 400 Bad Request")
+    @DisplayName("GET /points with invalid date format should return 400 Bad Request with validation message")
     void testGetPointsInvalidDateFormat() throws Exception {
         mockMvc.perform(get("/points")
                         .header("customerId", 1L)
                         .header("currentDate", "invalid-date-format"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid data type for header 'currentDate'. Expected LocalDate, but received: 'invalid-date-format'"));
+    }
+
+    @Test
+    @DisplayName("GET /points with non-numeric customerId data type should return 400 Bad Request with validation message")
+    void testGetPointsInvalidCustomerIdType() throws Exception {
+        mockMvc.perform(get("/points")
+                        .header("customerId", "not-a-number")
+                        .header("currentDate", "2026-10-25"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid data type for header 'customerId'. Expected Long, but received: 'not-a-number'"));
+    }
+
+    @Test
+    @DisplayName("GET /points with negative or zero customerId should return 400 Bad Request")
+    void testGetPointsInvalidCustomerIdValue() throws Exception {
+        mockMvc.perform(get("/points")
+                        .header("customerId", -5L)
+                        .header("currentDate", "2026-10-25"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid customerId: must be a positive integer"));
     }
 }

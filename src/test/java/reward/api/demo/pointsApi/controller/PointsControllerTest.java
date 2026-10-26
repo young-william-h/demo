@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -71,5 +72,17 @@ class PointsControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNull();
         verify(pointsService).getCustomerPointsSummary(999L, testDate);
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalArgumentException when customerId is zero or negative")
+    void testGetCustomerPointsSummaryInvalidCustomerId() {
+        assertThrows(IllegalArgumentException.class, () ->
+                pointsController.getCustomerPointsSummary(0L, testDate)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                pointsController.getCustomerPointsSummary(-5L, testDate)
+        );
     }
 }
